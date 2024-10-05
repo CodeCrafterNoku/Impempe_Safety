@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mpempe3/screens/landing_page.dart';
 
 class AccountSetupScreen extends StatefulWidget {
   const AccountSetupScreen({Key? key}) : super(key: key);
@@ -21,6 +24,8 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
   final TextEditingController _contactRelationshipController = TextEditingController();
   final List<String> _addresses = [];
   final List<Map<String, String>> _contacts = [];
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -55,17 +60,44 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
     }
   }
 
+  Future<void> _finishSetup() async {
+    try {
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        // Save user details in Firestore
+        await _firestore.collection('users').doc(user.uid).update({
+          'age': _ageController.text.trim(),
+          'addresses': _addresses,
+          'contacts': _contacts,
+          'profileImage': _image != null ? File(_image!.path).toString() : null, // Handle file storage later
+        });
+
+        // Navigate to LandingPage
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => LandingPage()), // Define your LandingPage widget
+        );
+      } else {
+        throw Exception("No user logged in");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink, // Matching color theme
+        backgroundColor: Colors.pink,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: ListView(
           children: [
-            const SizedBox(height: 30),
+            const SizedBox(height: 22),
             GestureDetector(
               onTap: _pickImage,
               child: CircleAvatar(
@@ -102,7 +134,7 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
             const SizedBox(height: 10),
             const Text(
               'Added Addresses:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Matching style
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             ..._addresses.map((address) => ListTile(title: Text(address))),
             const SizedBox(height: 20),
@@ -123,7 +155,6 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                //keyboardType: TextInputType.phone,
               ),
             ),
             const SizedBox(height: 10),
@@ -134,7 +165,6 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                //keyboardType: TextInputType.emailAddress,
               ),
             ),
             const SizedBox(height: 10),
@@ -154,14 +184,14 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                backgroundColor: Colors.pink, // Pink button for consistency
+                backgroundColor: Colors.pink,
               ),
               onPressed: _addContact,
               child: const Text(
                 'Add Contact',
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.white, // White text
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -183,9 +213,7 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
                 ),
                 backgroundColor: Colors.pink,
               ),
-              onPressed: () {
-                // Handle next steps after adding contacts
-              },
+              onPressed: _finishSetup,
               child: const Text(
                 'Finish Setup',
                 style: TextStyle(

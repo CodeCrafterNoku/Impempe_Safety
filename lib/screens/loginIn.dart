@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'landing_page.dart'; // Import landing page
@@ -9,12 +10,34 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _login() async {
+    try {
+      // Log in the user using email and password
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // Navigate to the landing page after successful login
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => LandingPage()),
+      );
+    } catch (e) {
+      // Display error message if login fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //title: const Text('Login'),
         backgroundColor: Colors.pink, // Match color theme
       ),
       body: Padding(
@@ -40,6 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 30),
             TextField(
+              controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(
@@ -49,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 20),
             TextField(
+              controller: _passwordController,
               obscureText: _obscurePassword,
               decoration: InputDecoration(
                 labelText: 'Password',
@@ -78,11 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   backgroundColor: Colors.pink, // Pink button
                 ),
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => LandingPage()),
-                  );
-                },
+                onPressed: _login, // Call the _login function when the button is pressed
                 child: const Text(
                   'Log In',
                   style: TextStyle(

@@ -17,18 +17,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Column(
         children: [
           Expanded(
-            child: PageView(
-              controller: _controller,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              children: [
-                buildOnboardingPage('assets/onboarding1.svg', 'Welcome to Mpempe!'),
-                buildOnboardingPage('assets/onboarding2.svg', 'Your App for Your Safety'),
-                buildOnboardingPage('assets/onboarding3.svg', 'Let\'s get started!'),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PageView(
+                controller: _controller,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                children: [
+                  buildOnboardingPage('assets/onboarding1.svg', 'Impempe helps you share your location with trusted contacts, ensuring you are always connected and safe wherever you go. Feel protected knowing someone is looking after your daily movements.'),
+                  buildOnboardingPage('assets/onboarding2.svg', 'Automatic Alerts for Peace of Mind ,Move beyond your usual routes? Impempe automatically triggers an alert to your trusted contacts if you move more than 35 km from your normal address, even when you are unable to send a message'),
+                  buildOnboardingPage('assets/onboarding3.svg', 'Empower Yourself with Safety Tips,Learn self-defense with our specialized video classes for kids and adults. Empower yourself and your loved ones to stay safe, while Impempe takes care of the rest!'),
+                ],
+              ),
             ),
           ),
           Row(
@@ -68,7 +71,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       children: [
         SvgPicture.asset(asset, height: 300),
         const SizedBox(height: 20),
-        Text(text, style: const TextStyle(fontSize: 18)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          child: Text(textAlign: TextAlign.center, text, style: const TextStyle(fontSize: 16)),
+        ),
       ],
     );
   }
