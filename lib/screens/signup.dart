@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mpempe3/screens/initial_set_up.dart';
 import 'package:mpempe3/screens/loginIn.dart';
@@ -16,6 +18,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _signUp() async {
+    try {
+      if (_passwordController.text != _confirmPasswordController.text) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Passwords do not match")),
+        );
+        return;
+      }
+
+      // Create the user in Firebase Authentication
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // Save additional user details in Firestore
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'full_name': _nameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'phone': _phoneController.text.trim(),
+      });
+
+      // Navigate to the next screen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => InitialSetupScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,12 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 backgroundColor: Color(0xFFfa8bb1),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => InitialSetupScreen()),
-                );
-                // Handle sign-up logic here
-              },
+              onPressed: _signUp,
               child: const Text('Sign Up', style: TextStyle(fontSize: 18, color: Colors.black)),
             ),
             const SizedBox(height: 20),

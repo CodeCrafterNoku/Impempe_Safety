@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "688055618668",
+    "project_id": "impempe-b8542",
+    "storage_bucket": "impempe-b8542.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688055618668:android:bbc3cc4d69536242719c49",
+        "android_client_info": {
+          "package_name": "com.example.mpempe3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQTrxI7RyAIaj4oar3H_XS7HlSTNMQsdc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

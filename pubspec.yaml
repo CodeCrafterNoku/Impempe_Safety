@@ -44,6 +44,9 @@ dependencies:
   flutter_color:
   webview_flutter:
   flutter_inappwebview:
+  cloud_firestore:
+  firebase_core:
+  firebase_auth:
 
 
 

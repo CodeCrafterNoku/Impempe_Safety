@@ -1,0 +1,32 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "impempe-b8542",
+          "appId": "1:688055618668:android:bbc3cc4d69536242719c49",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "impempe-b8542",
+          "configurations": {
+            "android": "1:688055618668:android:bbc3cc4d69536242719c49",
+            "ios": "1:688055618668:ios:b68ba1d379f06404719c49",
+            "macos": "1:688055618668:ios:b68ba1d379f06404719c49",
+            "web": "1:688055618668:web:a05a7af43b7531bb719c49",
+            "windows": "1:688055618668:web:67740e6a229bf30f719c49"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}
