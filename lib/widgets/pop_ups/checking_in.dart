@@ -68,9 +68,45 @@ class PeriodicCheckIn extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            // Navigate to existing LandingPage
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => LandingPage()), // Call the existing LandingPage
+            // Show alert next of kin dialog
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: Colors.pink[100], // Set background color for the alert dialog
+                  title: const Text('Alert Next of Kin?'),
+                  content: const Text('Would you like to alert your next of kin?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        // If they do not want to alert, go to LandingPage
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => LandingPage()), // Navigate to LandingPage
+                        );
+                      },
+                      child: const Text(
+                        'No',
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // If they want to alert, retrieve next of kin information (not yet defined)
+                        // TODO: Retrieve next of kin information here
+
+                        // After handling, navigate to LandingPage
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => LandingPage()), // Navigate to LandingPage
+                        );
+                      },
+                      child: const Text(
+                        'Yes',
+                        style: TextStyle(color: Colors.red, fontSize: 16),
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           },
           child: const Text(
