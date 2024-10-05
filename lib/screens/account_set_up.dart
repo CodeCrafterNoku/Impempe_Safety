@@ -1,5 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 
 class RoutineSetupScreen extends StatefulWidget {
   const RoutineSetupScreen({Key? key}) : super(key: key);
@@ -13,6 +14,9 @@ class _RoutineSetupScreenState extends State<RoutineSetupScreen> {
   final TextEditingController _locationController = TextEditingController();
   bool notifyEmergencyContact = false; // State for the switch
   double preferredMaxDistance = 10; // Default max distance
+
+  // Firestore instance
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Function to handle time picking
   Future<TimeOfDay?> _selectTime(BuildContext context) async {
@@ -39,35 +43,63 @@ class _RoutineSetupScreenState extends State<RoutineSetupScreen> {
   }
 
   // Function to validate and save routine
-  void _saveRoutine() {
-    String? missingFields = '';
+  void _saveRoutine() async {
+    try {
+      String? missingFields = '';
 
-    if (!notifyEmergencyContact) {
-      missingFields += ' - Notify Emergency Contact on Anomaly must be on\n';
-    }
+      if (!notifyEmergencyContact) {
+        missingFields += ' - Notify Emergency Contact on Anomaly must be on\n';
+      }
 
-    if (_stops.isEmpty) {
-      missingFields += ' - At least one stop must be added\n';
-    }
+      if (_stops.isEmpty) {
+        missingFields += ' - At least one stop must be added\n';
+      }
 
-    if (missingFields.isNotEmpty) {
-      // Show a dialog or a snack bar to inform the user of missing fields
+      if (missingFields.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Please address the following missing fields:\n$missingFields"),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        // Get the current user's UID
+        String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+        if (userId != null) {
+          // Save the routine under the user's Firestore document
+          await _firestore.collection('users').doc(userId).update({
+            'stops': _stops,
+            'notifyEmergencyContact': notifyEmergencyContact,
+            'preferredMaxDistance': preferredMaxDistance,
+            'createdAt': FieldValue.serverTimestamp(), // Optional: timestamp
+          });
+
+          // Display success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Routine saved!"),
+              duration: Duration(seconds: 2),
+            ),
+          );
+          print('Routine saved!');
+        } else {
+          // Handle case where user is not authenticated
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Error: User not logged in"),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Please address the following missing fields:\n$missingFields"),
+          content: Text("Error: ${e.toString()}"),
           duration: const Duration(seconds: 3),
         ),
       );
-    } else {
-      // If all conditions are met, display routine saved message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Routine saved!"),
-          duration: Duration(seconds: 2),
-        ),
-      );
-      // Add your save logic here (if necessary)
-      print('Routine saved!'); // Placeholder for saving routine
     }
   }
 
