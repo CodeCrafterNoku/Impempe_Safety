@@ -6,6 +6,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'landing_page.dart';
+
 class ProfileSetup extends StatefulWidget {
   const ProfileSetup({Key? key}) : super(key: key);
 
@@ -81,7 +83,7 @@ class _ProfileSetupScreenState extends State<ProfileSetup> {
     try {
       User? user = _auth.currentUser;
       if (user == null) {
-// Handle unauthenticated state
+        // Handle unauthenticated state
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('User not authenticated')),
         );
@@ -90,28 +92,31 @@ class _ProfileSetupScreenState extends State<ProfileSetup> {
 
       String userId = user.uid;
 
-// Upload profile image if selected
+      // Upload profile image if selected
       String? profileImageUrl = await _uploadProfileImage(userId);
 
-// Prepare data to save
+      // Prepare data to save
       Map<String, dynamic> userData = {
         'age': _ageController.text.trim(),
         'addresses': _addresses,
         'contacts': _contacts,
         'profile_image': profileImageUrl,
-// Add more fields if necessary
+        // Add more fields if necessary
       };
 
-// Save data to Firestore
+      // Save data to Firestore
       await _firestore.collection('users').doc(userId).set(userData, SetOptions(merge: true));
 
-// Optionally, navigate to another screen or show success message
+      // Optionally, navigate to another screen or show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile setup completed successfully')),
       );
 
-// Navigate to home or another screen
-// Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      // Navigate to the landing page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => LandingPage()), // Change LandingPage to your actual landing page widget
+      );
     } catch (e) {
       print('Error saving profile setup: $e');
       ScaffoldMessenger.of(context).showSnackBar(

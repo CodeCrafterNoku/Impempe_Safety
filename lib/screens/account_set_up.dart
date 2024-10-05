@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:mpempe3/screens/profile_setting.dart';
+//import 'profile_setup_screen.dart'; // Import the profile setup screen
 
 class RoutineSetupScreen extends StatefulWidget {
   const RoutineSetupScreen({Key? key}) : super(key: key);
@@ -66,6 +69,11 @@ class _RoutineSetupScreenState extends State<RoutineSetupScreen> {
           duration: Duration(seconds: 2),
         ),
       );
+      // Navigate to the ProfileSetupScreen after saving the routine
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileSetup()),
+      );
       // Add your save logic here (if necessary)
       print('Routine saved!'); // Placeholder for saving routine
     }
@@ -84,8 +92,8 @@ class _RoutineSetupScreenState extends State<RoutineSetupScreen> {
             // Brief description at the top
             const Text(
               'Please add your routine stops below. '
-                  'Select a location and set the start and end times for each stop. '
-                  'You can also specify your maximum preferred distance and choose to notify an emergency contact if an anomaly occurs.',
+              'Select a location and set the start and end times for each stop. '
+              'You can also specify your maximum preferred distance and choose to notify an emergency contact if an anomaly occurs.',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
             const SizedBox(height: 20),

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mpempe3/screens/self_defense_videos.dart';
+import 'package:mpempe3/screens/signup.dart';
 
 class MyDrawer extends StatelessWidget {
   @override
@@ -81,9 +83,18 @@ class MyDrawer extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.logout, color: Color(0xFFfa8bb1)),
               title: const Text('Log Out'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context); // Close the drawer
-                // Handle log out
+                try {
+                  await FirebaseAuth.instance.signOut(); // Sign out from Firebase
+                  // Navigate to the login screen or handle redirection after logout
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => SignUpScreen()), // Replace with your login screen
+                  );
+                } catch (e) {
+                  // Handle errors, if any
+                  print('Error signing out: $e');
+                }
               },
             ),
             ListTile(
