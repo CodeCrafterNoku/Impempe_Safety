@@ -1,89 +1,73 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mpempe3/screens/landing_page.dart';
+import 'dart:async';
 
-class AccountSetupScreen extends StatefulWidget {
-  const AccountSetupScreen({Key? key}) : super(key: key);
+class RoutineSetupScreen extends StatefulWidget {
+  const RoutineSetupScreen({Key? key}) : super(key: key);
 
   @override
-  State<AccountSetupScreen> createState() => _AccountSetupScreenState();
+  State<RoutineSetupScreen> createState() => _RoutineSetupScreenState();
 }
 
-class _AccountSetupScreenState extends State<AccountSetupScreen> {
-  XFile? _image;
-  final ImagePicker _picker = ImagePicker();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _contactNameController = TextEditingController();
-  final TextEditingController _contactNumberController = TextEditingController();
-  final TextEditingController _contactEmailController = TextEditingController();
-  final TextEditingController _contactRelationshipController = TextEditingController();
-  final List<String> _addresses = [];
-  final List<Map<String, String>> _contacts = [];
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class _RoutineSetupScreenState extends State<RoutineSetupScreen> {
+  final List<Map<String, dynamic>> _stops = [];
+  final TextEditingController _locationController = TextEditingController();
+  bool notifyEmergencyContact = false; // State for the switch
+  double preferredMaxDistance = 10; // Default max distance
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = pickedFile;
-    });
+  // Function to handle time picking
+  Future<TimeOfDay?> _selectTime(BuildContext context) async {
+    return await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
   }
 
-  void _addAddress() {
-    if (_addressController.text.isNotEmpty) {
+  // Function to add a new stop to the list
+  void _addStop() async {
+    final startTime = await _selectTime(context);
+    final endTime = await _selectTime(context);
+    if (_locationController.text.isNotEmpty && startTime != null && endTime != null) {
       setState(() {
-        _addresses.add(_addressController.text);
-        _addressController.clear();
+        _stops.add({
+          'location': _locationController.text,
+          'startTime': startTime,
+          'endTime': endTime,
+        });
+        _locationController.clear();
       });
     }
   }
 
-  void _addContact() {
-    if (_contactNameController.text.isNotEmpty && _contactNumberController.text.isNotEmpty && _contactEmailController.text.isNotEmpty && _contactRelationshipController.text.isNotEmpty) {
-      setState(() {
-        _contacts.add({
-          'name': _contactNameController.text,
-          'number': _contactNumberController.text,
-          'email': _contactEmailController.text,
-          'relationship': _contactRelationshipController.text,
-        });
-        _contactNameController.clear();
-        _contactNumberController.clear();
-        _contactEmailController.clear();
-        _contactRelationshipController.clear();
-      });
+  // Function to validate and save routine
+  void _saveRoutine() {
+    String? missingFields = '';
+
+    if (!notifyEmergencyContact) {
+      missingFields += ' - Notify Emergency Contact on Anomaly must be on\n';
     }
-  }
 
-  Future<void> _finishSetup() async {
-    try {
-      User? user = _auth.currentUser;
+    if (_stops.isEmpty) {
+      missingFields += ' - At least one stop must be added\n';
+    }
 
-      if (user != null) {
-        // Save user details in Firestore
-        await _firestore.collection('users').doc(user.uid).update({
-          'age': _ageController.text.trim(),
-          'addresses': _addresses,
-          'contacts': _contacts,
-          'profileImage': _image != null ? File(_image!.path).toString() : null, // Handle file storage later
-        });
-
-        // Navigate to LandingPage
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => LandingPage()), // Define your LandingPage widget
-        );
-      } else {
-        throw Exception("No user logged in");
-      }
-    } catch (e) {
+    if (missingFields.isNotEmpty) {
+      // Show a dialog or a snack bar to inform the user of missing fields
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${e.toString()}")),
+        SnackBar(
+          content: Text("Please address the following missing fields:\n$missingFields"),
+          duration: const Duration(seconds: 3),
+        ),
       );
+    } else {
+      // If all conditions are met, display routine saved message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Routine saved!"),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      // Add your save logic here (if necessary)
+      print('Routine saved!'); // Placeholder for saving routine
     }
   }
 
@@ -91,131 +75,116 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink,
+        backgroundColor: Colors.pink, // Pink color theme to match
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            const SizedBox(height: 22),
-            GestureDetector(
-              onTap: _pickImage,
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: _image != null ? Image.file(File(_image!.path)).image : null,
-                child: _image == null ? const Icon(Icons.add_a_photo, size: 50) : null,
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _ageController,
-              decoration: InputDecoration(
-                labelText: 'Age',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _addressController,
-              decoration: InputDecoration(
-                labelText: 'Address',
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: _addAddress,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
+            // Brief description at the top
             const Text(
-              'Added Addresses:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              'Please add your routine stops below. '
+                  'Select a location and set the start and end times for each stop. '
+                  'You can also specify your maximum preferred distance and choose to notify an emergency contact if an anomaly occurs.',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
-            ..._addresses.map((address) => ListTile(title: Text(address))),
             const SizedBox(height: 20),
+
+            // Location input field
             TextFormField(
-              controller: _contactNameController,
+              controller: _locationController,
               decoration: InputDecoration(
-                labelText: 'Contact Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: _contactNumberController,
-              decoration: InputDecoration(
-                labelText: 'Contact Number',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: _contactEmailController,
-              decoration: InputDecoration(
-                labelText: 'Contact Email',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: _contactRelationshipController,
-              decoration: InputDecoration(
-                labelText: 'Relationship',
+                labelText: 'Location',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
             const SizedBox(height: 20),
+
+            // Button to add a stop with start and end times
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                backgroundColor: Colors.pink,
+                backgroundColor: Colors.pink, // Pink button for consistency
               ),
-              onPressed: _addContact,
+              onPressed: _addStop,
               child: const Text(
-                'Add Contact',
+                'Add Stop',
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.white,
+                  color: Colors.white, // White text
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
+
+            // Display list of added stops
             const Text(
-              'Added Contacts:',
+              'Added Stops:',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            ..._contacts.map((contact) => ListTile(
-                  title: Text(contact['name']!),
-                  subtitle: Text('Number: ${contact['number']}, Email: ${contact['email']}, Relationship: ${contact['relationship']}'),
-                )),
+            const SizedBox(height: 10),
+
+            // Showing added stops
+            ..._stops.map((stop) {
+              return ListTile(
+                title: Text(stop['location']),
+                subtitle: Text(
+                  'Start Time: ${stop['startTime']!.format(context)}, End Time: ${stop['endTime']!.format(context)}',
+                ),
+              );
+            }).toList(),
+
             const SizedBox(height: 20),
+
+            // Notify Emergency Contact switch
+            const SizedBox(height: 20),
+            SwitchListTile(
+              title: const Text("Notify Emergency Contact on Anomaly?"),
+              value: notifyEmergencyContact,
+              onChanged: (value) {
+                setState(() {
+                  notifyEmergencyContact = value;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+
+            // Preferred Max Distance display
+            Text(
+              "Preferred Max Distance: ${preferredMaxDistance.round()} km",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            Slider(
+              label: "Max Distance (${preferredMaxDistance.round()} km)",
+              min: 1,
+              max: 100,
+              value: preferredMaxDistance,
+              onChanged: (value) {
+                setState(() {
+                  preferredMaxDistance = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: 20),
+
+            // Final save button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                backgroundColor: Colors.pink,
+                backgroundColor: Colors.pink, // Pink button for consistency
               ),
-              onPressed: _finishSetup,
+              onPressed: _saveRoutine, // Updated to use the validation function
               child: const Text(
-                'Finish Setup',
+                'Save Routine',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -230,12 +199,7 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
 
   @override
   void dispose() {
-    _ageController.dispose();
-    _addressController.dispose();
-    _contactNameController.dispose();
-    _contactNumberController.dispose();
-    _contactEmailController.dispose();
-    _contactRelationshipController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 }

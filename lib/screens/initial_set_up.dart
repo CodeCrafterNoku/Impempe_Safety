@@ -28,7 +28,7 @@ class _InitialSetupScreenState extends State<InitialSetupScreen> {
     // If all permissions are granted, navigate to the next screen
     if (locationPermissionGranted && micPermissionGranted && contactsPermissionGranted) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const AccountSetupScreen()),
+        MaterialPageRoute(builder: (context) => const RoutineSetupScreen()),
       );
     }
   }
@@ -86,7 +86,7 @@ class _InitialSetupScreenState extends State<InitialSetupScreen> {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => AccountSetupScreen()),
+                  MaterialPageRoute(builder: (_) => RoutineSetupScreen()),
                 );
               },
               child: Padding(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../screens/landing_page.dart';
 
 class PeriodicCheckIn extends StatelessWidget {
   const PeriodicCheckIn({super.key});
@@ -6,6 +7,7 @@ class PeriodicCheckIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Colors.pink[100], // Set the background color to a light pink
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -23,7 +25,41 @@ class PeriodicCheckIn extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
+            // Show confirmation dialog
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: Colors.pink[100], // Set background color for confirmation dialog
+                  title: const Text('Are you sure?'),
+                  content: const Text('Do you really want to cancel the check-in?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the confirmation dialog
+                      },
+                      child: const Text(
+                        'No',
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close confirmation
+                        // Navigate to LandingPage
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => LandingPage()), // Call the existing LandingPage
+                        );
+                      },
+                      child: const Text(
+                        'Yes',
+                        style: TextStyle(color: Colors.red, fontSize: 16),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
           },
           child: const Text(
             'Cancel',
@@ -32,8 +68,10 @@ class PeriodicCheckIn extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            // Code to share safety status
-            Navigator.of(context).pop(); // Close the dialog
+            // Navigate to existing LandingPage
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => LandingPage()), // Call the existing LandingPage
+            );
           },
           child: const Text(
             'OK',
