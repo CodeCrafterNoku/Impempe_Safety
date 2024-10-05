@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mpempe3/screens/profile_setting.dart';
 //import 'profile_setup_screen.dart'; // Import the profile setup screen
@@ -42,7 +43,7 @@ class _RoutineSetupScreenState extends State<RoutineSetupScreen> {
   }
 
   // Function to validate and save routine
-  void _saveRoutine() {
+  void _saveRoutine() async {
     String? missingFields = '';
 
     if (!notifyEmergencyContact) {
@@ -62,22 +63,46 @@ class _RoutineSetupScreenState extends State<RoutineSetupScreen> {
         ),
       );
     } else {
-      // If all conditions are met, display routine saved message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Routine saved!"),
-          duration: Duration(seconds: 2),
-        ),
-      );
-      // Navigate to the ProfileSetupScreen after saving the routine
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfileSetup()),
-      );
-      // Add your save logic here (if necessary)
-      print('Routine saved!'); // Placeholder for saving routine
+      // Try saving the routine to Firebase Firestore
+      try {
+        await FirebaseFirestore.instance.collection('routines').add({
+          'notifyEmergencyContact': notifyEmergencyContact,
+          'preferredMaxDistance': preferredMaxDistance,
+          'stops': _stops.map((stop) {
+            return {
+              'location': stop['location'],
+              'startTime': stop['startTime']!.format(context),
+              'endTime': stop['endTime']!.format(context),
+            };
+          }).toList(),
+          'createdAt': FieldValue.serverTimestamp(), // Optional: Timestamp
+        });
+
+        // If successful, show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Routine saved!"),
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Navigate to the ProfileSetupScreen after saving the routine
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfileSetup()),
+        );
+      } catch (e) {
+        // Handle error if saving fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to save routine: $e"),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
