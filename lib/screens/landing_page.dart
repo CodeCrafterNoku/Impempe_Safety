@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mpempe3/widgets/customnav.dart';
 import 'package:mpempe3/widgets/mydrawer.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:geolocator/geolocator.dart'; // Import the Geolocator package
 
 import 'help.dart'; // Import your HelpPage
 
@@ -54,7 +54,7 @@ class _LandingPageState extends State<LandingPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Location Permission Needed'),
+          // title: Text('Location Permission Needed'),
           content: Text('Location permissions are permanently denied. Please enable them in settings to use this feature.'),
           actions: [
             TextButton(
