@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mpempe3/screens/onboarding.dart';
+// import 'package:mpempe3/screens/current_location_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OnboardingScreen(),
+      home:  OnboardingScreen(),
     );
   }
 }
