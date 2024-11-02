@@ -4,6 +4,7 @@ import 'package:mpempe3/widgets/customnav.dart';
 import 'package:mpempe3/widgets/mydrawer.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:geolocator/geolocator.dart'; // Import the Geolocator package
 
 import 'help.dart'; // Import your HelpPage
 
@@ -26,6 +27,7 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     super.initState();
     _initSpeech();
+    _checkLocationPermission(); // Check location permission during initialization
   }
 
   // Method to open the drawer
@@ -39,8 +41,35 @@ class _LandingPageState extends State<LandingPage> {
     setState(() {});
   }
 
+  /// Check and request location permission
+  Future<void> _checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.deniedForever) {
+      // Handle the case where the user denies the permission permanently.
+      // Show a dialog explaining that location permissions are required.
+      print('Location permission is permanently denied, please enable it in settings.');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Location Permission Needed'),
+          content: Text('Location permissions are permanently denied. Please enable them in settings to use this feature.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   /// Start listening to speech
   void _startListening() async {
+    await _checkLocationPermission(); // Check permissions before starting to listen
     if (_speechEnabled && !_speechToText.isListening && !_isListening) {
       setState(() {
         _isListening = true;
