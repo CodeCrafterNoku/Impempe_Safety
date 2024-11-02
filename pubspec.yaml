@@ -48,6 +48,7 @@ dependencies:
   firebase_core:
   firebase_auth:
   firebase_storage: ^12.3.2
+  geolocator: ^13.0.1
 
 
 

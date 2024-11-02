@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mpempe3/screens/account_set_up.dart';
-import 'package:mpempe3/screens/landing_page.dart';
+import 'package:mpempe3/screens/onboarding.dart';
 
 import 'firebase_options.dart';
 
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LandingPage(),
+      home: OnboardingScreen(),
     );
   }
 }
