@@ -17,8 +17,40 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
     zoom: 5, // A zoom level that shows the whole country with its provinces
   );
 
-
   Set<Marker> markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCurrentLocation();
+  }
+
+  Future<void> _fetchCurrentLocation() async {
+    try {
+      Position position = await _determinePosition();
+      googleMapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(position.latitude, position.longitude),
+            zoom: 14,
+          ),
+        ),
+      );
+
+      markers.clear();
+      markers.add(
+        Marker(
+          markerId: const MarkerId('currentLocation'),
+          position: LatLng(position.latitude, position.longitude),
+        ),
+      );
+
+      setState(() {});
+    } catch (e) {
+      // Handle errors, such as permission denied or location services disabled
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +75,7 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              "Click on the current location button to see your location",
+              "Click on the current location button to refresh your location",
               style: TextStyle(fontSize: 16, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
@@ -51,28 +83,7 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          Position position = await _determinePosition();
-
-          googleMapController.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: LatLng(position.latitude, position.longitude),
-                zoom: 14,
-              ),
-            ),
-          );
-
-          markers.clear();
-          markers.add(
-            Marker(
-              markerId: const MarkerId('currentLocation'),
-              position: LatLng(position.latitude, position.longitude),
-            ),
-          );
-
-          setState(() {});
-        },
+        onPressed: _fetchCurrentLocation,
         label: const Text("Current Location"),
         icon: const Icon(Icons.location_history),
       ),
