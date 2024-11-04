@@ -12,7 +12,11 @@ class CurrentLocationScreen extends StatefulWidget {
 class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
   late GoogleMapController googleMapController;
 
-  static const CameraPosition initialCameraPosition = CameraPosition(target: LatLng(37.42796133580664, -122.085749655962), zoom: 14);
+  static const CameraPosition initialCameraPosition = CameraPosition(
+    target: LatLng(-28.4793, 24.6727), // Central coordinates for South Africa
+    zoom: 5, // A zoom level that shows the whole country with its provinces
+  );
+
 
   Set<Marker> markers = {};
 
@@ -23,29 +27,51 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
         title: const Text("User current location"),
         centerTitle: true,
       ),
-      body: GoogleMap(
-        initialCameraPosition: initialCameraPosition,
-        markers: markers,
-        zoomControlsEnabled: false,
-        mapType: MapType.normal,
-        onMapCreated: (GoogleMapController controller) {
-          googleMapController = controller;
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: GoogleMap(
+              initialCameraPosition: initialCameraPosition,
+              markers: markers,
+              zoomControlsEnabled: false,
+              mapType: MapType.normal,
+              onMapCreated: (GoogleMapController controller) {
+                googleMapController = controller;
+              },
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              "Click on the current location button to see your location",
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           Position position = await _determinePosition();
 
-          googleMapController
-              .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(position.latitude, position.longitude), zoom: 14)));
-
+          googleMapController.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(position.latitude, position.longitude),
+                zoom: 14,
+              ),
+            ),
+          );
 
           markers.clear();
-
-          markers.add(Marker(markerId: const MarkerId('currentLocation'),position: LatLng(position.latitude, position.longitude)));
+          markers.add(
+            Marker(
+              markerId: const MarkerId('currentLocation'),
+              position: LatLng(position.latitude, position.longitude),
+            ),
+          );
 
           setState(() {});
-
         },
         label: const Text("Current Location"),
         icon: const Icon(Icons.location_history),
