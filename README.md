@@ -1,16 +1,28 @@
-# mpempe3
 
-A new Flutter project.
+*Impempe - A Safety App for Women and Children*
+Overview
+Impempe is a safety-focused mobile application developed to address the pressing issue of safety for women and children in South Africa. With the rise in safety concerns, Impempe serves as a reliable tool designed to enhance protection and provide immediate response capabilities.
 
-## Getting Started
+Key Features
+1. Trusted Device Linking
+Impempe allows users to link their app to trusted devices belonging to friends, family members, or guardians. These linked devices will receive real-time alerts during emergency situations, ensuring help is just a notification away.
 
-This project is a starting point for a Flutter application.
+2. Emergency Command Listening
+Our app includes a unique voice-activated emergency command feature. Users can set up a secret command phrase that, when spoken, triggers the app to send their current location to their linked trusted devices without any additional input.
 
-A few resources to get you started if this is your first Flutter project:
+3. Defensive Training Videos
+Impempe provides access to a library of self-defense videos to empower users with the knowledge and techniques needed to protect themselves in dangerous situations. This feature aims to enhance users’ preparedness and confidence.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+4. Continuous Location Sharing
+To increase safety, Impempe continuously shares users' locations with a secure database. This ensures that trusted individuals can always monitor the user’s whereabouts.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+5. Emergency Call Button
+The app features a prominent emergency button that users can press to quickly call for help. This feature ensures that immediate assistance can be requested with minimal effort.
+
+6. Pattern Deviation Alerts
+Impempe monitors users' typical movement patterns. If the app detects an unexpected deviation from these patterns, it sends a check-in notification to the user. If there is no response within a set timeframe, emergency alerts are automatically sent to the linked trusted devices.
+
+Mission
+The primary goal of Impempe is to contribute to the reduction of missing persons cases, specifically among women and children in South Africa. By integrating cutting-edge technology with user-friendly features, Impempe aims to offer peace of mind and practical support to those who need it most.
+
+To View Our Work Here Is An APK LINK MVP: https://drive.google.com/file/d/1iqu4m2_Aqd21D9_lBmwOScjlnsMvevMw/view?usp=sharing
