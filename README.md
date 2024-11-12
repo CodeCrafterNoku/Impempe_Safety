@@ -36,5 +36,21 @@ The primary goal of Impempe is to contribute to the reduction of missing persons
 
 To View Our Work Here Is An APK LINK MVP: https://drive.google.com/file/d/1iqu4m2_Aqd21D9_lBmwOScjlnsMvevMw/view?usp=sharing
 
-![Impempe App Screenshot](assets/Link_Devices.jpg)
+<p align="center">
+  <img src="assets/OnBoarding1.jpg" alt="Image 1" width="300"/>
+  <img src="assets/OnBoarding2.jpg" alt="Image 2" width="300"/>
+  <img src="assets/OnBoarding3.jpg" alt="Image 2" width="300"/>
+  <img src="assets/SignUp.jpg" alt="Image 2" width="300"/>
+  <img src="assets/Routines.jpg" alt="Image 2" width="300"/>
+  <img src="assets/Link Devices.jpg" alt="Image 2" width="300"/>
+  <img src="assets/Defeene Videos.jpg" alt="Image 2" width="300"/>
+  <img src="assets/HomeScreen.jpg" alt="Image 2" width="300"/>
+  <img src="assets/Emergency Contact.jpg" alt="Image 2" width="300"/>
+
+
+
+
+
+
+</p>
 
