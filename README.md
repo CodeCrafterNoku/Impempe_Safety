@@ -35,3 +35,6 @@ Mission
 The primary goal of Impempe is to contribute to the reduction of missing persons cases, specifically among women and children in South Africa. By integrating cutting-edge technology with user-friendly features, Impempe aims to offer peace of mind and practical support to those who need it most.
 
 To View Our Work Here Is An APK LINK MVP: https://drive.google.com/file/d/1iqu4m2_Aqd21D9_lBmwOScjlnsMvevMw/view?usp=sharing
+
+![Impempe App Screenshot](assets/Link_Devices.jpg)
+
