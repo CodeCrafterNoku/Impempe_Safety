@@ -1,11 +1,65 @@
 
+
+
+<h2 align="center">
+  Impempe Safety App - GK24 Hack<br/>
+  <a href="https://.app/" target="_blank">Nokubonga CodeCrafterNoku</a>
+</h2>
+<div align="center">
+ <p align="center">
+  <img src="assets/OnBoarding1.jpg" alt="Image 1" width="300"/>
+  <img src="assets/OnBoarding2.jpg" alt="Image 2" width="300"/>
+  <img src="assets/OnBoarding3.jpg" alt="Image 2" width="300"/>
+  <img src="assets/SignUp.jpg" alt="Image 2" width="300"/>
+  <img src="assets/Routines.jpg" alt="Image 2" width="300"/>
+  <img src="assets/Link Devices.jpg" alt="Image 2" width="300"/>
+  <img src="assets/Defeene Videos.jpg" alt="Image 2" width="300"/>
+  <img src="assets/HomeScreen.jpg" alt="Image 2" width="300"/>
+  <img src="assets/Emergency Contact.jpg" alt="Image 2" width="300"/>
+</p>
+</div>
+
+<br/>
+
+<center>
+
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com) &nbsp;
+[![forthebadge](https://forthebadge.com/images/badges/made-with-flutter.svg)](https://forthebadge.com) &nbsp;
+
+
+</center>
+
+<h3 align="center">
+    🔹
+    <a href="https://github.com/CodeCrafterNoku/Impempe_Safety/issues">Report Bug</a> &nbsp; &nbsp;
+    🔹
+    <a href="https://github.com/CodeCrafterNoku/Impempe_Safety/issues">Request Feature</a>
+</h3>
+
+
+This project was built using these technologies.
+
+- flutter
+- firebase
+- andriod studio
+
+
+## Features
+
+**📖 Multi-Page Layout**
+
+**🎨 Built using flutter and designed using figma**
+
+**📱 MVP**
+
+
+
+### Show your support
+
+Give a ⭐ if you like this app!
+
+# MORE ON THE APP
 # Impempe - A Safety App for Women and Children
-
-
-
-
-
-
 
 
 ## Overview
@@ -36,21 +90,5 @@ The primary goal of Impempe is to contribute to the reduction of missing persons
 
 To View Our Work Here Is An APK LINK MVP: https://drive.google.com/file/d/1iqu4m2_Aqd21D9_lBmwOScjlnsMvevMw/view?usp=sharing
 
-<p align="center">
-  <img src="assets/OnBoarding1.jpg" alt="Image 1" width="300"/>
-  <img src="assets/OnBoarding2.jpg" alt="Image 2" width="300"/>
-  <img src="assets/OnBoarding3.jpg" alt="Image 2" width="300"/>
-  <img src="assets/SignUp.jpg" alt="Image 2" width="300"/>
-  <img src="assets/Routines.jpg" alt="Image 2" width="300"/>
-  <img src="assets/Link Devices.jpg" alt="Image 2" width="300"/>
-  <img src="assets/Defeene Videos.jpg" alt="Image 2" width="300"/>
-  <img src="assets/HomeScreen.jpg" alt="Image 2" width="300"/>
-  <img src="assets/Emergency Contact.jpg" alt="Image 2" width="300"/>
 
-
-
-
-
-
-</p>
 
